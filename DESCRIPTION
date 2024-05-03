@@ -1,0 +1,26 @@
+Package: ConvictBehavior
+Title: Convict Cichlid Behavior
+Version: 0.0.1.0
+Authors@R: 
+  c(person(given = "Sarah",
+           family = "Muh",
+           role = c("aut", "cre"),
+           email = "sam9464@my.utexas.edu"),
+    person(given = "Maxximus",
+           family = "Ramsaroop",
+           role = "aut",
+           email = "mgramsaroop@utexas.edu"),
+    person(given = "Jennie",
+           family = "DeVore",
+           role = "aut",
+           email = "jennie.devore@austin.utexas.edu"))
+Description: The functions included in this package analyze data from experiments on social state and behavior in convict cichlids. One function performs an ANOVA and post-hoc Tukey HSD test, another checks for normality, a third graphs results as boxplots, and a fourth shows what the graph looks for different types of colorblind vision.
+Depends: R (>= 4.0)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    colorblindr,
+    cowplot,
+    ggplot2
+RoxygenNote: 7.3.1

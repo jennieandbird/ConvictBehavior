@@ -1,0 +1,6 @@
+library(tidyverse)
+#Load in data
+f<-"https://raw.githubusercontent.com/SarahArtemis/Novel_Data_Science/main/ConvictCichlid_PC1%262_eigenvalues.csv"
+ConvictData<-read.csv(f, header = TRUE)
+# overwrite argument replaces the data if it already exists
+usethis::use_data(ConvictData, overwrite = TRUE)
