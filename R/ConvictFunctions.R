@@ -75,7 +75,7 @@ ColorblindPlot <- function(df, response, predictor, type, palette){
   cowplot::plot_grid(myboxplot, colorchecked)
 }
 
-#' @title AssumptionCheck: A function to check assumptions of normality.
+#' @title NormCheck: A function to check assumptions of normality.
 #' @description This function displays a QQ Plot of the residuals of the model and performs a Shapiro-Wilk normality test.
 #' @param df dataframe
 #' @param response response variable (e.g., PC_1_value)
@@ -83,14 +83,15 @@ ColorblindPlot <- function(df, response, predictor, type, palette){
 #' @param predictor2 predictor variable (e.g., State)
 #' @param predictor3 predictor variable (e.g., Response)
 #' @param type subject type (e.g., Sex)
-#' @keywords ANOVA, model assumptions
+#' @keywords ANOVA, model assumptions, normality
 #' @export
 #' @examples
-#' AssumptionCheck(df = ConvictData, response = 'PC_1_value', predictor1 = 'Treatment', predictor2 = 'State', predictor3 = 'Response', type = 'Sex')
+#' NormCheck(df = ConvictData, response = 'PC_1_value', predictor1 = 'Treatment', predictor2 = 'State', predictor3 = 'Response', type = 'Sex')
 
-AssumptionCheck <- function(df, response, predictor1, predictor2, predictor3, type){
+NormCheck <- function(df, response, predictor1, predictor2, predictor3, type){
   # Set up the model
-  m1 <- aov(as.formula(paste(response, "~", predictor1, "+", predictor2, "+", predictor3, "+", type, "+", predictor1, ":", type, "+", predictor2, ":", type, "+", predictor3, ":", type)), data = df)
+  formula_string <- paste(response, "~", predictor1, "+", predictor2, "+", predictor3, "+", type, "+", predictor1, ":", type, "+", predictor2, ":", type, "+", predictor3, ":", type)
+  m1 <- aov(as.formula(formula_string), data = df)
   # Create QQ plots
   plot1 <- qqnorm(resid(m1))
   plot2 <- qqline(resid(m1))
@@ -98,5 +99,79 @@ AssumptionCheck <- function(df, response, predictor1, predictor2, predictor3, ty
   s <- shapiro.test(resid(m1))
   results <- list(plot1, plot2, s)
   print(results)
+}
+
+#' @title NormCheckLog: A function to check (log-transformed) assumptions of normality.
+#' @description This function displays a QQ Plot of the residuals of the model and performs a Shapiro-Wilk normality test. This time, the response variable is log-transformed.
+#' @param df dataframe
+#' @param response response variable (e.g., PC_1_value)
+#' @param predictor1 predictor variable (e.g., Treatment)
+#' @param predictor2 predictor variable (e.g., State)
+#' @param predictor3 predictor variable (e.g., Response)
+#' @param type subject type (e.g., Sex)
+#' @keywords ANOVA, model assumptions, normality, log-transformed
+#' @export
+#' @examples
+#' NormCheckLog(df = ConvictData, response = 'PC_1_value', predictor1 = 'Treatment', predictor2 = 'State', predictor3 = 'Response', type = 'Sex')
+
+NormCheckLog <- function(df, response, predictor1, predictor2, predictor3, type){
+  df[[response]] <- log(df[[response]])
+  # Set up the model
+  formula_string <- paste(response, "~", predictor1, "+", predictor2, "+", predictor3, "+", type, "+", predictor1, ":", type, "+", predictor2, ":", type, "+", predictor3, ":", type)
+  m1 <- aov(as.formula(formula_string), data = df)
+  # Create QQ plots
+  plot1 <- qqnorm(resid(m1))
+  plot2 <- qqline(resid(m1))
+  # Follow-up with the Shapiro-Wilk test
+  s <- shapiro.test(resid(m1))
+  results <- list(plot1, plot2, s)
+  print(results)
+}
+
+#' @title PC2ModelSelect: A function to select the best model.
+#' @description This function assists with model selection, finding which predictor variables best explain the PC2 values.
+#' @param df dataframe
+#' @param response response variable (e.g., PC_2_value)
+#' @param predictor1 predictor variable (e.g., Treatment)
+#' @param predictor2 predictor variable (e.g., State)
+#' @param predictor3 predictor variable (e.g., Response)
+#' @param type subject type (e.g., Sex)
+#' @keywords ANOVA, model assumptions, normality
+#' @export
+#' @examples
+#' PC2ModelSelect(df = ConvictData, response = 'PC_2_value', predictor1 = 'Treatment', predictor2 = 'State', predictor3 = 'Response', type = 'Sex')
+
+PC2ModelSelect <- function(df, response, predictor1, predictor2, predictor3, type){
+  # Extract the actual variable from the dataframe
+  response_var <- df[[response]]
+
+  # Apply log transformation to the response variable
+  log_response <- log(response_var)
+
+  # Set up the full model
+  m2_1 <- aov(as.formula(paste("log_response", "~", predictor1, "+", predictor2, "+", predictor3, "+", type, "+", predictor1, ":", type, "+", predictor2, ":", type, "+", predictor3, ":", type)), data = df)
+  # Set up other options...
+  m0 <- aov(as.formula(paste("log_response", "~", 1)), data = df)
+  m1 <- aov(as.formula(paste("log_response", "~", predictor1)), data = df)
+  m2 <- aov(as.formula(paste("log_response", "~", predictor2)), data = df)
+  m3 <- aov(as.formula(paste("log_response", "~", predictor3)), data = df)
+  m4 <- aov(as.formula(paste("log_response", "~", type)), data = df)
+  m5 <- aov(as.formula(paste("log_response", "~", predictor1, "+", type)), data = df)
+  m6 <- aov(as.formula(paste("log_response", "~", predictor2, "+", type)), data = df)
+  m7 <- aov(as.formula(paste("log_response", "~", predictor1, "+", predictor2, "+", type)), data = df)
+  m8 <- aov(as.formula(paste("log_response", "~", predictor1, "+", predictor3, "+", type)), data = df)
+  m9 <- aov(as.formula(paste("log_response", "~", predictor2, "+", predictor3, "+", type)), data = df)
+  m10 <- aov(as.formula(paste("log_response", "~", predictor2, "+", type, "+", predictor2, ":", type)), data = df)
+  m11 <- aov(as.formula(paste("log_response", "~", predictor1, "+", predictor2, "+", predictor3, "+", type)), data = df)
+  m12 <- aov(as.formula(paste("log_response", "~", predictor2, "+", predictor3, "+", type, "+", predictor2, ":", type)), data = df)
+  m13 <- aov(as.formula(paste("log_response", "~", predictor2, "+", predictor3, "+", type, "+", predictor3, ":", type)), data = df)
+  m14 <- aov(as.formula(paste("log_response", "~", predictor1, "+", predictor3, "+", type, "+", predictor3, ":", type)), data = df)
+  m15 <- aov(as.formula(paste("log_response", "~", predictor1, "+", predictor2, "+", type, "+", predictor2, ":", type)), data = df)
+
+  (PC2s <- MASS::stepAIC(m2_1, scope = . ~ ., direction = "both"))
+  PC2summary <- summary(PC2s)
+  PC2mods <- AICcmodavg::aictab(list(m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m2_1), c("m0", "m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8", "m9", "m10", "m11", "m12", "m13", "m14", "m15", "m2_1"))
+  resultsPC2 <- list(PC2summary, PC2mods)
+  print(resultsPC2)
 }
 
