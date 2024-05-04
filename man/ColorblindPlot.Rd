@@ -20,9 +20,9 @@ ColorblindPlot(df, response, predictor, type, palette)
 \description{
 This function displays the NiceBoxplot in approximations of colorblind vision, as well as a monochrome version if the plot were printed in greyscale.
 \if{html}{Example plot:
-\out{<div style="text-align: center">}\figure{2024-05-01_ColorblindPlot.png}{options: style="width:750px;max-width:75\%;"}\out{</div>}}
+\out{<div style="text-align: center">}\figure{2024-05-01_ColorblindPlot.PNG}{options: style="width:750px;max-width:75\%;"}\out{</div>}}
 \if{latex}{Example plot:
-\out{\begin{center}}\figure{2024-05-01_ColorblindPlot.png}\out{\end{center}}}
+\out{\begin{center}}\figure{2024-05-01_ColorblindPlot.PNG}\out{\end{center}}}
 }
 \examples{
 ColorblindPlot(df = ConvictData, response = 'PC_1_value', predictor = 'Treatment', type = 'Sex', palette = Palette_Default)

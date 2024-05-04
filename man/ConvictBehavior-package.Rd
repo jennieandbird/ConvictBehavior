@@ -6,7 +6,7 @@
 \alias{ConvictBehavior-package}
 \title{ConvictBehavior: Convict Cichlid Behavior}
 \description{
-The functions included in this package analyze data from experiments on social state and behavior in convict cichlids. One function performs an ANOVA and post-hoc Tukey HSD test, another checks for normality, a third graphs results as boxplots, and a fourth shows what the graph looks for different types of colorblind vision.
+The functions included in this package analyze data from experiments on social state and behavior in convict cichlids.
 }
 \author{
 \strong{Maintainer}: Sarah Muh \email{sam9464@my.utexas.edu}
